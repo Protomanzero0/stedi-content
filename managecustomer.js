@@ -104,4 +104,3 @@ function createcustomer(){
         dataType: 'text'
     });
 }
-
