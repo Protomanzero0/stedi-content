@@ -9,8 +9,8 @@ function setusername(){
     phoneNumber = $("#username").val();
     $.ajax({
         type: 'POST',
-        url: 'https://dev.stedi.me/twofactorlogin/',
-        data: JSON.stringify({userName: phoneNumber, password: oneTimePassword}),
+        url: 'https://dev.stedi.me/twofactorlogin/'+phoneNumber,
+        data: JSON.stringify({phoneNumber, oneTimePassword}),
         // success: function(data) {
         //     window.location.href = "/timer.html#"+data;//add the token to the url
         // },
@@ -58,11 +58,10 @@ function checkexpiredtoken(token){
 
 function userlogin(){
     setuserpassword();
-    setusername();
     $.ajax({
         type: 'POST',
         url: 'https://dev.stedi.me/twofactorlogin',
-        data: JSON.stringify({phoneNumber: phoneNumber, oneTimePassword}),
+        data: JSON.stringify({phoneNumber, oneTimePassword}),
         success: function(data) {
             window.location.href = "/timer.html#"+data;//add the token to the url
         },
