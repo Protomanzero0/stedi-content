@@ -1,20 +1,30 @@
 //© 2021 Sean Murdock
 
-let userName = "";
-let password = "";
+let phoneNumber = "";
+let oneTimePassword = "";
 let verifypassword = "";
 let passwordRegEx=/((?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%!]).{6,40})/;
 
 function setusername(){
-    userName = $("#username").val();
+    phoneNumber = $("#username").val();
+    $.ajax({
+        type: 'POST',
+        url: 'https://dev.stedi.me/twofactorlogin/'+phoneNumber,
+        data: JSON.stringify({phoneNumber, oneTimePassword}),
+        // success: function(data) {
+        //     window.location.href = "/timer.html#"+data;//add the token to the url
+        // },
+        contentType: "application/text",
+        dataType: 'text'
+    })
 }
 
 function setuserpassword(){
-    password = $("#password").val();
+    oneTimePassword = $("#password").val();
     var valid=passwordRegEx.exec(password);
-    if (!valid){
-        alert('Must be 6 digits, upper, lower, number, and symbol');
-    }
+    // if (!valid){
+    //     alert('Must be 6 digits, upper, lower, number, and symbol');
+    // }
 }
 
 function setverifypassword(){
@@ -48,11 +58,10 @@ function checkexpiredtoken(token){
 
 function userlogin(){
     setuserpassword();
-    setusername();
     $.ajax({
         type: 'POST',
-        url: 'https://dev.stedi.me/login',
-        data: JSON.stringify({userName, password}),
+        url: 'https://dev.stedi.me/twofactorlogin',
+        data: JSON.stringify({phoneNumber, oneTimePassword}),
         success: function(data) {
             window.location.href = "/timer.html#"+data;//add the token to the url
         },
@@ -93,7 +102,7 @@ function createuser(){
     $.ajax({
         type: 'POST',
         url: '/user',
-        data: JSON.stringify({userName, 'email': userName, password, 'verifyPassword': vpwd, 'accountType':'Personal'}),//we are using the email as the user name
+        data: JSON.stringify({userName: phoneNumber, 'email': phoneNumber, password, 'verifyPassword': vpwd, 'accountType':'Personal'}),//we are using the email as the user name
         success: function(data) { alert(data);
 //        readonlyforms("newUser");
 //        alert(readonlyforms("newUser"));
@@ -107,7 +116,7 @@ function getstephistory(){
       $.ajax({
             type: 'POST',
             url: '/stephistory',
-            data: JSON.stringify({userName}),
+            data: JSON.stringify({userName: phoneNumber}),
             success: function(data) { alert(data);
             json = $.parseJSON(data);
             $('#results').html(json.name+' Total Steps: ' + json.stepTotal)},
